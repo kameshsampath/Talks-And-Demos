@@ -1,0 +1,2 @@
+
+This repository holds all the demos that were done during the Kubernetes and OpenShift bangalore meetup on Jun 10 2017. You can find the slides using during the talk here --> https://goo.gl/UNmqDz 

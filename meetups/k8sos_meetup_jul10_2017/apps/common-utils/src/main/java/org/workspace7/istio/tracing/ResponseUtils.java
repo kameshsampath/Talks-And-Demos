@@ -26,10 +26,10 @@ public class ResponseUtils {
         HttpHeaders httpHeaders = new HttpHeaders();
 
         for (String headerName : istioProperties.getTracingHeaders()) {
-            log.info("Retrieving value for  Header:{}", headerName);
             String headerValue = request.getHeader(headerName);
+            log.info("[Header:{} Value:{}]", headerName,headerValue);
             if (headerValue != null) {
-                httpHeaders.add(headerName, headerValue);
+                httpHeaders.set(headerName, headerValue);
             }
         }
 

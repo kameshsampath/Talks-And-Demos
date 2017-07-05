@@ -38,6 +38,9 @@ spec:
       containers:
       - image: namaste:1.0
         imagePullPolicy: IfNotPresent
+        env: 
+        - name: AB_OFF
+          value: "true"
         livenessProbe:
           httpGet:
             path: /health
@@ -118,6 +121,9 @@ spec:
       containers:
       - image: aloha:1.0
         imagePullPolicy: IfNotPresent
+        env: 
+        - name: AB_OFF
+          value: "true"
         livenessProbe:
           httpGet:
             path: /health
@@ -198,6 +204,9 @@ spec:
       containers:
       - image: hola:1.0
         imagePullPolicy: IfNotPresent
+        env: 
+        - name: AB_OFF
+          value: "true"
         livenessProbe:
           httpGet:
             path: /health

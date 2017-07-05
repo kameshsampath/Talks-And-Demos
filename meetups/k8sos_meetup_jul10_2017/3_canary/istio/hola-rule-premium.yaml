@@ -1,0 +1,13 @@
+---
+type: route-rule
+name: hola-cust-type
+spec:
+  destination: hola.default.svc.cluster.local
+  precedence: 2
+  match:
+    httpHeaders:
+      cust-type:
+        exact: premium
+  route:
+  - tags:
+      version: "2.0"

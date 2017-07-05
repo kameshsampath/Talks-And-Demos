@@ -1,0 +1,56 @@
+##################################################################################################
+#  Hello Service
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-sidecar
+  labels:
+    app: hello-sidecar
+spec:
+  type: NodePort
+  ports:
+  - port: 80
+    name: http
+  selector:
+    app: hello-sidecar
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hello-sidecar
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hello-sidecar
+        version: "1.0"
+    spec:
+      containers:
+      - name: www
+        image: axeclbr/git
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: GIT_REPO
+            value: https://github.com/kameshsampath/hello-sidecar
+        command:
+        - "sh"
+        - "-c"
+        - "mkdir -p /var/lib/data && cd /var/lib/data && git clone ${GIT_REPO} . && watch -n 600 git pull"
+        volumeMounts:
+        - mountPath: /var/lib/data
+          name: web-sources
+      - name: httpd
+        image: docker.io/nginx
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /usr/share/nginx/html
+          name: web-sources
+      volumes:
+        - name: web-sources
+          emptyDir: {}
+

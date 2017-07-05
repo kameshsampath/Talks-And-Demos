@@ -1,0 +1,276 @@
+##################################################################################################
+#  Namaste
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: namaste
+  labels:
+    app: namaste
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: namaste
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: namaste
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: namaste
+        version: "2.0"
+    spec:
+      containers:
+      - name: spring-boot
+        image: namaste:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+
+##################################################################################################
+#  Aloha
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aloha
+  labels:
+    app: aloha
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: aloha
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: aloha
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: aloha
+        version: "1.0"
+    spec:
+      containers:
+      - name: spring-boot
+        image: aloha:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+
+##################################################################################################
+#  Hola
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hola
+  labels:
+    app: hola
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: hola
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: hola
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: hola
+        version: "1.0"
+    spec:
+      containers:
+      - name: spring-boot
+        image: hola:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+
+##################################################################################################
+#  HelloWorld
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld
+  labels:
+    app: helloworld
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: helloworld
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: helloworld
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: helloworld
+        version: "1.0"
+    spec:
+      containers:
+      - name: spring-boot
+        image: helloworld:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+
+##################################################################################################
+#  HelloWorld Tracer
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-tracer
+  labels:
+    app: helloworld-tracer
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: helloworld-tracer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: helloworld-tracer
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: helloworld-tracer
+        version: "1.0"
+    spec:
+      containers:
+      - name: spring-boot
+        image: helloworld-tracer:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+
+###########################################################################
+# Ingress resource (helloworld-tracing)
+##########################################################################
+
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: helloworld-tracing
+  annotations:
+    kubernetes.io/ingress.class: "istio"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /hellotracer
+        backend:
+          serviceName: helloworld-tracer
+          servicePort: 8080
+      - path: /helloworld
+        backend:
+          serviceName: helloworld
+          servicePort: 8080
+      - path: /namaste
+        backend:
+          serviceName: namaste
+          servicePort: 8080
+      - path: /hola
+        backend:
+          serviceName: hola
+          servicePort: 8080
+      - path: /aloha
+        backend:
+          serviceName: hola
+          servicePort: 8080
+

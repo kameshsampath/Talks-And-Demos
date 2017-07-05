@@ -1,0 +1,436 @@
+##################################################################################################
+#  Namaste
+##################################################################################################
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: namaste
+  labels:
+    app: namaste
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: namaste
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: namaste
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        alpha.istio.io/sidecar: injected
+        alpha.istio.io/version: jenkins@ubuntu-16-04-build-12ac793f80be71-0.1.6-dab2033
+        pod.beta.kubernetes.io/init-containers: '[{"args":["-p","15001","-u","1337"],"image":"docker.io/istio/init:0.1","imagePullPolicy":"IfNotPresent","name":"init","securityContext":{"capabilities":{"add":["NET_ADMIN"]}}},{"args":["-c","sysctl
+          -w kernel.core_pattern=/tmp/core.%e.%p.%t \u0026\u0026 ulimit -c unlimited"],"command":["/bin/sh"],"image":"alpine","imagePullPolicy":"IfNotPresent","name":"enable-core-dump","securityContext":{"privileged":true}}]'
+      creationTimestamp: null
+      labels:
+        app: namaste
+        version: "2.0"
+    spec:
+      containers:
+      - image: namaste:1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        name: spring-boot
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+        resources: {}
+      - args:
+        - proxy
+        - sidecar
+        - -v
+        - "2"
+        - --passthrough
+        - "8080"
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        image: docker.io/istio/proxy_debug:0.1
+        imagePullPolicy: IfNotPresent
+        name: proxy
+        resources: {}
+        securityContext:
+          runAsUser: 1337
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: aloha
+  labels:
+    app: aloha
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: aloha
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: aloha
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        alpha.istio.io/sidecar: injected
+        alpha.istio.io/version: jenkins@ubuntu-16-04-build-12ac793f80be71-0.1.6-dab2033
+        pod.beta.kubernetes.io/init-containers: '[{"args":["-p","15001","-u","1337"],"image":"docker.io/istio/init:0.1","imagePullPolicy":"IfNotPresent","name":"init","securityContext":{"capabilities":{"add":["NET_ADMIN"]}}},{"args":["-c","sysctl
+          -w kernel.core_pattern=/tmp/core.%e.%p.%t \u0026\u0026 ulimit -c unlimited"],"command":["/bin/sh"],"image":"alpine","imagePullPolicy":"IfNotPresent","name":"enable-core-dump","securityContext":{"privileged":true}}]'
+      creationTimestamp: null
+      labels:
+        app: aloha
+        version: "1.0"
+    spec:
+      containers:
+      - image: aloha:1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        name: spring-boot
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+        resources: {}
+      - args:
+        - proxy
+        - sidecar
+        - -v
+        - "2"
+        - --passthrough
+        - "8080"
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        image: docker.io/istio/proxy_debug:0.1
+        imagePullPolicy: IfNotPresent
+        name: proxy
+        resources: {}
+        securityContext:
+          runAsUser: 1337
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hola
+  labels:
+    app: hola
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: hola
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: hola
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        alpha.istio.io/sidecar: injected
+        alpha.istio.io/version: jenkins@ubuntu-16-04-build-12ac793f80be71-0.1.6-dab2033
+        pod.beta.kubernetes.io/init-containers: '[{"args":["-p","15001","-u","1337"],"image":"docker.io/istio/init:0.1","imagePullPolicy":"IfNotPresent","name":"init","securityContext":{"capabilities":{"add":["NET_ADMIN"]}}},{"args":["-c","sysctl
+          -w kernel.core_pattern=/tmp/core.%e.%p.%t \u0026\u0026 ulimit -c unlimited"],"command":["/bin/sh"],"image":"alpine","imagePullPolicy":"IfNotPresent","name":"enable-core-dump","securityContext":{"privileged":true}}]'
+      creationTimestamp: null
+      labels:
+        app: hola
+        version: "1.0"
+    spec:
+      containers:
+      - image: hola:1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        name: spring-boot
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+        resources: {}
+      - args:
+        - proxy
+        - sidecar
+        - -v
+        - "2"
+        - --passthrough
+        - "8080"
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        image: docker.io/istio/proxy_debug:0.1
+        imagePullPolicy: IfNotPresent
+        name: proxy
+        resources: {}
+        securityContext:
+          runAsUser: 1337
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld
+  labels:
+    app: helloworld
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: helloworld
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: helloworld
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        alpha.istio.io/sidecar: injected
+        alpha.istio.io/version: jenkins@ubuntu-16-04-build-12ac793f80be71-0.1.6-dab2033
+        pod.beta.kubernetes.io/init-containers: '[{"args":["-p","15001","-u","1337"],"image":"docker.io/istio/init:0.1","imagePullPolicy":"IfNotPresent","name":"init","securityContext":{"capabilities":{"add":["NET_ADMIN"]}}},{"args":["-c","sysctl
+          -w kernel.core_pattern=/tmp/core.%e.%p.%t \u0026\u0026 ulimit -c unlimited"],"command":["/bin/sh"],"image":"alpine","imagePullPolicy":"IfNotPresent","name":"enable-core-dump","securityContext":{"privileged":true}}]'
+      creationTimestamp: null
+      labels:
+        app: helloworld
+        version: "1.0"
+    spec:
+      containers:
+      - image: helloworld:1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        name: spring-boot
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+        resources: {}
+      - args:
+        - proxy
+        - sidecar
+        - -v
+        - "2"
+        - --passthrough
+        - "8080"
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        image: docker.io/istio/proxy_debug:0.1
+        imagePullPolicy: IfNotPresent
+        name: proxy
+        resources: {}
+        securityContext:
+          runAsUser: 1337
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: helloworld-tracer
+  labels:
+    app: helloworld-tracer
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: helloworld-tracer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  name: helloworld-tracer
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        alpha.istio.io/sidecar: injected
+        alpha.istio.io/version: jenkins@ubuntu-16-04-build-12ac793f80be71-0.1.6-dab2033
+        pod.beta.kubernetes.io/init-containers: '[{"args":["-p","15001","-u","1337"],"image":"docker.io/istio/init:0.1","imagePullPolicy":"IfNotPresent","name":"init","securityContext":{"capabilities":{"add":["NET_ADMIN"]}}},{"args":["-c","sysctl
+          -w kernel.core_pattern=/tmp/core.%e.%p.%t \u0026\u0026 ulimit -c unlimited"],"command":["/bin/sh"],"image":"alpine","imagePullPolicy":"IfNotPresent","name":"enable-core-dump","securityContext":{"privileged":true}}]'
+      creationTimestamp: null
+      labels:
+        app: helloworld-tracer
+        version: "1.0"
+    spec:
+      containers:
+      - image: helloworld-tracer:1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 180
+        name: spring-boot
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+            scheme: HTTP
+          initialDelaySeconds: 10
+        resources: {}
+      - args:
+        - proxy
+        - sidecar
+        - -v
+        - "2"
+        - --passthrough
+        - "8080"
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        image: docker.io/istio/proxy_debug:0.1
+        imagePullPolicy: IfNotPresent
+        name: proxy
+        resources: {}
+        securityContext:
+          runAsUser: 1337
+status: {}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: helloworld-tracing
+  annotations:
+    kubernetes.io/ingress.class: "istio"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /hellotracer
+        backend:
+          serviceName: helloworld-tracer
+          servicePort: 8080
+      - path: /helloworld
+        backend:
+          serviceName: helloworld
+          servicePort: 8080
+      - path: /namaste
+        backend:
+          serviceName: namaste
+          servicePort: 8080
+      - path: /hola
+        backend:
+          serviceName: hola
+          servicePort: 8080
+      - path: /aloha
+        backend:
+          serviceName: hola
+          servicePort: 8080
+
+---

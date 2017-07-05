@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.workspace7.istio</groupId>
+  <artifactId>istio-tracing-demos-parent</artifactId>
+  <version>1.0</version>
+  <packaging>pom</packaging>
+
+  <name>Istio::Tracing Demos::Parent</name>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <kubernetes-client.version>2.4-SNAPSHOT</kubernetes-client.version>
+
+
+    <spring-boot.version>1.5.4.RELEASE</spring-boot.version>
+    <spring-cloud.version>Dalston.SR1</spring-cloud.version>
+    <spring-cloud-kubernetes.version>0.2.0.BUILD-SNAPSHOT</spring-cloud-kubernetes.version>
+    <seluth-common-zipkin-stream.version>1.0-SNAPSHOT</seluth-common-zipkin-stream.version>
+
+    <!-- Maven Plugins-->
+    <spring-boot.maven.plugin.version>1.5.4.RELEASE</spring-boot.maven.plugin.version>
+
+    <java.version>1.8</java.version>
+    <docker-maven-plugin.version>0.20.1</docker-maven-plugin.version>
+
+    <docker.image>fabric8/java-alpine-openjdk8-jdk</docker.image>
+  </properties>
+
+
+  <modules>
+    <module>common-utils</module>
+    <module>aloha</module>
+    <module>hola</module>
+    <module>namaste</module>
+    <module>helloworld</module>
+    <module>helloworld-tracer</module>
+  </modules>
+
+  <dependencyManagement>
+    <dependencies>
+
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <version>${spring-boot.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+    </dependencies>
+
+  </dependencyManagement>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>3.0.2</version>
+          <configuration>
+            <delimiters>@</delimiters>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${spring-boot.maven.plugin.version}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>io.fabric8</groupId>
+          <artifactId>docker-maven-plugin</artifactId>
+          <version>${docker-maven-plugin.version}</version>
+          <executions>
+            <execution>
+              <phase>install</phase>
+              <goals>
+                <goal>build</goal>
+              </goals>
+              <configuration>
+                <images>
+                  <image>
+                    <name>%a:%v</name>
+                    <build>
+                      <from>${docker.image}</from>
+                      <assembly>
+                        <descriptorRef>artifact</descriptorRef>
+                        <targetDir>/deployments</targetDir>
+                      </assembly>
+                    </build>
+                  </image>
+                </images>
+              </configuration>
+            </execution>
+          </executions>
+
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

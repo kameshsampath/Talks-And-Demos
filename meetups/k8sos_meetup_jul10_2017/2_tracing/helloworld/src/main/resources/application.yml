@@ -1,0 +1,19 @@
+server:
+  port: 8080
+
+app:
+  version: @project.version@
+
+spring:
+  application:
+    name: @project.artifactId@
+
+istio:
+  tracing-headers:
+    - x-request-id
+    - x-b3-traceid
+    - x-b3-spanid
+    - x-b3-parentspanid
+    - x-b3-sampled
+    - x-b3-flags
+    - x-ot-span-context

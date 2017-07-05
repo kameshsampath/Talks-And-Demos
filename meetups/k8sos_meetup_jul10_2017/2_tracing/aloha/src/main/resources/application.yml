@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+aloha:
+  version: @project.version@
+
+spring:
+  application:
+    name: @project.artifactId@

@@ -1,0 +1,13 @@
+---
+type: route-rule
+name: hola-canary
+spec:
+  destination: hola.default.svc.cluster.local
+  precedence: 1
+  route:
+  - tags:
+      version: "1.0"
+    weight: 80
+  - tags:
+      version: "2.0"
+    weight: 20

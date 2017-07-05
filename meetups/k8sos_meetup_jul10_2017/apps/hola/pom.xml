@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>hola</artifactId>
+    <version>2.0</version>
 
     <name>Istio::Tracing Demos::Hola</name>
     <description>Says hello in Spanish</description>

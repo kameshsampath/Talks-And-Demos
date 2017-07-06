@@ -8,6 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,7 +44,23 @@ public class HelloController {
                 HttpMethod.GET, httpEntity, String.class);
 
 
-        return responseUtils.buildResponse(namaste.getBody(), hola.getBody(), aloha.getBody());
+        //This will circuit break
+        String aloha2;
+        try {
+            ResponseEntity<String> aloha2Resp = restTemplate.exchange("http://aloha:8080/aloha2",
+                    HttpMethod.GET, httpEntity, String.class);
+
+            if (aloha2Resp.getStatusCode().is2xxSuccessful()) {
+                aloha2 = aloha2Resp.getBody();
+            } else {
+                aloha2 = "Status Code :" + aloha2Resp.getStatusCode();
+            }
+        } catch (RestClientException e) {
+            log.error(e.getMessage());
+            aloha2 = e.getMessage();
+        }
+
+        return responseUtils.buildResponse(namaste.getBody(), hola.getBody(), aloha.getBody(), aloha2);
     }
 
 }

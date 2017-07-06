@@ -1,0 +1,10 @@
+---
+type: route-rule
+name: helloworld-v2
+spec:
+  destination: helloworld.default.svc.cluster.local
+  precedence: 1
+  route:
+  - tags:
+      version: "2.0"
+    weight: 100

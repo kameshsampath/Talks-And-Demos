@@ -271,6 +271,6 @@ spec:
           servicePort: 8080
       - path: /aloha
         backend:
-          serviceName: hola
+          serviceName: aloha
           servicePort: 8080
 
